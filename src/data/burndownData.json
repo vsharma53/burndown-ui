@@ -1,0 +1,5 @@
+{
+  "labels": ["Week 1", "Week 2", "Week 3", "Week 4"],
+  "possibleHours": [100, 200, 300, 400],
+  "actualHours": [90, 175, 250, 360]
+}
