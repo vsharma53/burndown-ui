@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button, Table, Row, Col } from "react-bootstrap";
+import { addPto } from "../api";
 
 export default function PTOManager({ dateRange, onPTOChange }) {
+  useEffect(()=>{
+    addPto()
+  },[])
   const [mode, setMode] = useState("upload"); // upload | manual
   const [ptoData, setPtoData] = useState([
     { id: 1, name: "John Doe", ptoHours: 8 },
