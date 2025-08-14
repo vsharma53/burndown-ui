@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import DateRangePicker from "../components/DateRangePicker";
 import HolidayList from "../components/HolidayList";
 import PTOManager from "../components/PTOManager";
@@ -74,12 +74,35 @@ export default function Dashboard() {
 
   return (
     <Container className="mt-4">
-      <h3>Burndown Report Generator</h3>
-      <DateRangePicker onDateChange={handleDateChange} />
+      <div
+        className="mb-3 p-3 border rounded shadow-sm d-flex justify-content-between align-items-center"
+        style={{ background: "linear-gradient(180deg, #f8f9fa, #ffffff)" }}
+      >
+        <div>
+          <h4 className="mb-1">Burndown Report Generator</h4>
+          <div className="text-muted small">Select a date range to generate charts and export reports</div>
+        </div>
+        {dateRange.start && dateRange.end && (
+          <span className="badge bg-primary">
+            {dateRange.start} 
+            <span className="mx-1">to</span>
+            {dateRange.end}
+          </span>
+        )}
+      </div>
+      <div className="mb-3">
+        <DateRangePicker onDateChange={handleDateChange} />
+        <Row className="g-2 g-md-3">
+          <Col md={6}>
+            <ReportGenerator onGenerate={handleGenerate} disabled={!dateRange.start || !dateRange.end} fullWidth />
+          </Col>
+          <Col md={6}>
+            <ExportButtons dateRange={dateRange} fullWidth />
+          </Col>
+        </Row>
+      </div>
       {dateRange.start && dateRange.end && <HolidayList holidays={holidays} />}
       <PTOManager dateRange={dateRange} onPTOChange={setPtoEntries} />
-      <ReportGenerator onGenerate={handleGenerate} disabled={!dateRange.start || !dateRange.end} />
-      <ExportButtons dateRange={dateRange} />
     
       {chartData.labels.length > 0 && (
         <ReportMetrics rows={burndownRows} />

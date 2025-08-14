@@ -1,8 +1,13 @@
 import { Button } from "react-bootstrap";
 
-export default function ReportGenerator({ onGenerate, disabled = false }) {
+export default function ReportGenerator({ onGenerate, disabled = false, fullWidth = true }) {
   return (
-    <Button variant="primary" className="my-2 mr-2" style={{marginRight: "10px"}} onClick={onGenerate} disabled={disabled}>
+    <Button
+      variant="primary"
+      className={fullWidth ? "w-100 my-2" : "my-2"}
+      onClick={onGenerate}
+      disabled={disabled}
+    >
       Generate Burndown Report
     </Button>
   );
