@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Card, Form } from "react-bootstrap";
 import DateRangePicker from "../components/DateRangePicker";
 import HolidayList from "../components/HolidayList";
 import PTOManager from "../components/PTOManager";
@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [metrics, setMetrics] = useState({ actualHours: "-", possibleHours: "-", ratio: "-" });
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [ptoEntries, setPtoEntries] = useState([]);
+  const [showPto, setShowPto] = useState(false);
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [burndownRows, setBurndownRows] = useState([]);
 
@@ -90,19 +91,54 @@ export default function Dashboard() {
           </span>
         )}
       </div>
-      <div className="mb-3">
-        <DateRangePicker onDateChange={handleDateChange} />
-        <Row className="g-2 g-md-3">
-          <Col md={6}>
-            <ReportGenerator onGenerate={handleGenerate} disabled={!dateRange.start || !dateRange.end} fullWidth />
-          </Col>
-          <Col md={6}>
-            <ExportButtons dateRange={dateRange} fullWidth />
-          </Col>
-        </Row>
-      </div>
+      <Card className="mb-3 shadow-sm" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.08)", border: "2px solid #ced4da", borderRadius: "0.5rem" }}>
+        <Card.Body>
+          <Row className="g-3">
+            <Col md={4}>
+              <DateRangePicker onDateChange={handleDateChange} field="start" noCard />
+            </Col>
+            <Col md={4}>
+              <DateRangePicker onDateChange={handleDateChange} field="end" noCard />
+            </Col>
+            <Col md={4} className="d-flex flex-column justify-content-end">
+              <ReportGenerator onGenerate={handleGenerate} disabled={!dateRange.start || !dateRange.end} fullWidth />
+              <ExportButtons dateRange={dateRange} fullWidth />
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+      <Card className="mb-3 shadow-sm" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.08)", border: "2px solid #ced4da", borderRadius: "0.5rem" }}>
+        <Card.Body className="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+          <div className="mb-2 mb-md-0">
+            <div className="fw-semibold mb-1">Do you want to add PTO?</div>
+            <div className="text-muted small">Add personal time off entries for the selected date range</div>
+          </div>
+          <Form>
+            <div className="d-flex gap-3">
+              <Form.Check
+                type="radio"
+                label="Yes"
+                name="addPto"
+                id="addPtoYes"
+                checked={showPto}
+                onChange={() => setShowPto(true)}
+              />
+              <Form.Check
+                type="radio"
+                label="No"
+                name="addPto"
+                id="addPtoNo"
+                checked={!showPto}
+                onChange={() => setShowPto(false)}
+              />
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
       {dateRange.start && dateRange.end && <HolidayList holidays={holidays} />}
-      <PTOManager dateRange={dateRange} onPTOChange={setPtoEntries} />
+      {showPto && (
+        <PTOManager dateRange={dateRange} onPTOChange={setPtoEntries} />
+      )}
     
       {chartData.labels.length > 0 && (
         <ReportMetrics rows={burndownRows} />
