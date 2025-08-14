@@ -107,6 +107,7 @@ export default function Dashboard() {
           </Row>
         </Card.Body>
       </Card>
+      {dateRange.start && dateRange.end && <HolidayList holidays={holidays} />}
       <Card className="mb-3 shadow-sm" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.08)", border: "2px solid #ced4da", borderRadius: "0.5rem" }}>
         <Card.Body className="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
           <div className="mb-2 mb-md-0">
@@ -135,7 +136,7 @@ export default function Dashboard() {
           </Form>
         </Card.Body>
       </Card>
-      {dateRange.start && dateRange.end && <HolidayList holidays={holidays} />}
+     
       {showPto && (
         <PTOManager dateRange={dateRange} onPTOChange={setPtoEntries} />
       )}
