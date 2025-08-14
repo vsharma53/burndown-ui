@@ -17,7 +17,7 @@ export default function ExportButtons({ dateRange }) {
         disabled={disabled}
         onClick={handleExportCsv}
       >
-        Export CSV
+        Export Burndown CSV
       </Button>
     </ButtonGroup>
   );
