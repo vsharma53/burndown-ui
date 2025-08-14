@@ -14,6 +14,54 @@ const apiClient = axios.create({
   headers: { "Content-Type": "application/json" }
 });
 
+// ---- Global API notifications (success/error/loading) ----
+let inflightRequestCount = 0;
+
+function emitLoadingChange() {
+  try {
+    window.dispatchEvent(
+      new CustomEvent("api:loading", { detail: { inflight: inflightRequestCount } })
+    );
+  } catch (_) {}
+}
+
+function emitSuccess(message) {
+  try {
+    window.dispatchEvent(new CustomEvent("api:success", { detail: { message } }));
+  } catch (_) {}
+}
+
+function emitError(message) {
+  try {
+    window.dispatchEvent(new CustomEvent("api:error", { detail: { message } }));
+  } catch (_) {}
+}
+
+apiClient.interceptors.request.use((config) => {
+  inflightRequestCount += 1;
+  emitLoadingChange();
+  return config;
+});
+
+apiClient.interceptors.response.use(
+  (response) => {
+    inflightRequestCount = Math.max(0, inflightRequestCount - 1);
+    emitLoadingChange();
+    const url = response?.config?.url || "";
+    emitSuccess(`Success: ${url}`);
+    return response;
+  },
+  (error) => {
+    inflightRequestCount = Math.max(0, inflightRequestCount - 1);
+    emitLoadingChange();
+    const url = error?.config?.url || "";
+    const status = error?.response?.status;
+    const msg = error?.response?.data?.message || error?.message || "Request failed";
+    emitError(`Error ${status || ""}: ${url} - ${msg}`);
+    return Promise.reject(error);
+  }
+);
+
 export const addPto = async (data) => {
   try {
     const response = await apiClient.post(ADD_PTO, data);

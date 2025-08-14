@@ -1,5 +1,11 @@
 import Dashboard from "./pages/Dashboard";
+import ApiNotifications from "./components/ApiNotifications";
 
 export default function App() {
-  return <Dashboard />;
+  return (
+    <>
+      <ApiNotifications />
+      <Dashboard />
+    </>
+  );
 }
